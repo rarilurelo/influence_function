@@ -22,7 +22,7 @@ class MnistTrainer(object):
         # create directory
         utility.make_dir(save_path)
         # load pretrained model if possible
-        self.load_model(load_model)
+        self.load(load_model)
         # init log
         self.init_log()
 
@@ -118,11 +118,11 @@ class MnistTrainer(object):
         self.to_cpu()
         return sum_loss, accuracy
 
-    def save_model(self, i):
+    def save(self, i):
         self.model.eval()
         torch.save(self.model.state_dict(), '{}/{}_{}.model'.format(self.save_path, self.model.name, i))
 
-    def load_model(self, path):
+    def load(self, path):
         if path is not None:
             print('load {}'.format(path))
             self.model.eval()
@@ -132,7 +132,7 @@ class MnistTrainer(object):
         for i in utility.create_progressbar(self.epochs + 1, desc='epoch', stride=1, start=self.start_epoch):
             train_loss = self.train_one_epoch()
             self.log['train_loss'].write('{}'.format(train_loss), debug='Loss Train {}:'.format(i))
-            self.save_model(i)
+            self.save(i)
             self.optimizer(i)
             test_loss, test_accuracy = self.test_one_epoch()
             self.log['test_loss'].write('{}'.format(test_loss), debug='Loss Test {}:'.format(i))

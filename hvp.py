@@ -39,5 +39,7 @@ if __name__ == '__main__':
         x, t = Variable(x, volatile=False), Variable(t, volatile=False)
         y = main.model(x)
         loss = F.nll_loss(y, t, weight=None, size_average=True)
-        hv = hvp(loss, list(model.parameters()), list(model.parameters()))
+        v = grad(loss, list(model.parameters()), retain_graph=True, create_graph=True)
+        hv = hvp(loss, list(model.parameters()), v)
+        print(hv)
         break
