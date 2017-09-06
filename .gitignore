@@ -1,2 +1,5 @@
 log
 log/*.model
+
+s_test
+s_test/*.s_test
