@@ -6,6 +6,11 @@ from trainer_mnist import MnistTrainer
 from net import Net
 from optimizers import MomentumSGD
 
+# to evade error, disabled cudnn
+# error is like this:
+# RuntimeError: CUDNN_STATUS_NOT_SUPPORTED. This error may appear if you passed in a non-contiguous input.
+
+torch.backends.cudnn.enabled = False
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
