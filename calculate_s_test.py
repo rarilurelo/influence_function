@@ -17,11 +17,11 @@ if __name__ == '__main__':
     parser.add_argument('--gpu', type=int, default=-1, metavar='N',
                         help='-1 means cpu, otherwise gpu id')
     parser.add_argument('--save_path', type=str, default='./log', metavar='N',
-                        help='log and model will be saved here')
+                        help='s_test will be saved here')
     parser.add_argument('--load_model', default=None, metavar='N',
                         help='pretrained model')
     parser.add_argument('--train_batch_size', type=int, default=1, metavar='N',
-                        help='input batch size for training (default: 64)')
+                        help='input batch size for s_test (default: 1)')
     parser.add_argument('--t', type=int, default=5000, metavar='N',
                         help='t')
     parser.add_argument('--r', type=int, default=10, metavar='N',
@@ -31,7 +31,9 @@ if __name__ == '__main__':
     parser.add_argument('--scale', type=float, default=25.0, metavar='N',
                         help='scaling')
     parser.add_argument('--debug', default=True, metavar='N',
-                        help='run test_one_epoch')
+                        help='run test_one_epoch before processing s_test')
+    parser.add_argument('--start', type=float, default=0, metavar='N',
+                        help='index starts from this')
 
 args = parser.parse_args().__dict__
 print(args)
@@ -40,6 +42,7 @@ r = args.pop('r')
 damp = args.pop('damp')
 scale = args.pop('scale')
 debug = args.pop('debug')
+start = args.pop('start')
 
 model = Net()
 optimizer = MomentumSGD(model, 0, 0)
@@ -52,7 +55,7 @@ if args['gpu'] >= 0:
 if debug is True:
     print(main.test_one_epoch())
 
-for i in utility.create_progressbar(main.test_loader.dataset.test_data.shape[0], desc='z_test'):
+for i in utility.create_progressbar(main.test_loader.dataset.test_data.shape[0], desc='z_test', start=start):
     z_test, t_test = main.test_loader.dataset[i]
     z_test = main.test_loader.collate_fn([z_test])
     t_test = main.test_loader.collate_fn([t_test])
