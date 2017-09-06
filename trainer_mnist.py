@@ -4,13 +4,14 @@ import torch.nn.functional as F
 from torchvision import datasets, transforms
 from torch.autograd import Variable
 import utility
+from log import Log
 
 
 class MnistTrainer(object):
 
-    def __init__(self, model, optimizer, gpu=-1, save_path='./', train_transform=None, test_transform=None, train_batch_size=64, test_batch_size=256, start_epoch=1, epochs=200, seed=1):
+    def __init__(self, model, optimizer, gpu=-1, save_path='./', load_model=None, train_transform=None, test_transform=None, train_batch_size=64, test_batch_size=256, start_epoch=1, epochs=200, seed=1):
         self.model, self.optimizer = model, optimizer
-        self.gpu, self.save_path = gpu, utility.remove_slash(save_path)
+        self.gpu, self.save_path, load_model = gpu, utility.remove_slash(save_path), load_model
         self.train_transform, self.test_transform = train_transform, test_transform
         self.train_batch_size, self.test_batch_size = train_batch_size, test_batch_size
         self.start_epoch, self.epochs, self.seed = start_epoch, epochs, seed
@@ -18,6 +19,12 @@ class MnistTrainer(object):
         self.init_dataset()
         # initialize seed
         self.init_seed()
+        # create directory
+        utility.make_dir(save_path)
+        # load pretrained model if possible
+        self.load_model(load_model)
+        # init log
+        self.init_log()
 
     def init_transform(self):
         if self.train_transform is None:
@@ -52,6 +59,12 @@ class MnistTrainer(object):
                            transform=self.test_transform),
             batch_size=self.test_batch_size, shuffle=False, **kwargs)
 
+    def init_log(self):
+        self.log = {}
+        self.log['train_loss'] = Log(self.save_path, 'train_loss.log')
+        self.log['test_loss'] = Log(self.save_path, 'test_loss.log')
+        self.log['test_accuracy'] = Log(self.save_path, 'test_accuracy.log')
+
     def check_gpu(self):
         return self.gpu >= 0 and torch.cuda.is_available()
 
@@ -82,7 +95,6 @@ class MnistTrainer(object):
             self.optimizer.step()
             sum_loss += loss.cpu().data[0] * self.train_batch_size
         self.to_cpu()
-        # save model
         return sum_loss / len(self.train_loader.dataset)
 
     def test_one_epoch(self):
@@ -103,13 +115,25 @@ class MnistTrainer(object):
             accuracy += y.eq(t.data.view_as(y)).cpu().sum()
         sum_loss /= len(self.test_loader.dataset)
         accuracy /= len(self.test_loader.dataset)
+        self.to_cpu()
         return sum_loss, accuracy
 
-    def save_model(self):
-        pass
+    def save_model(self, i):
+        self.model.eval()
+        torch.save(self.model.state_dict(), '{}/{}_{}.model'.format(self.save_path, self.model.name, i))
+
+    def load_model(self, path):
+        if path is not None:
+            print('load {}'.format(path))
+            self.model.eval()
+            self.model.load_state_dict(torch.load(path))
 
     def run(self):
         for i in utility.create_progressbar(self.epochs + 1, desc='epoch', stride=1, start=self.start_epoch):
-            print('train {}: loss->{}'.format(i, self.train_one_epoch()))
-            self.save_model()
-            print('test {}: (loss, accu)->{}'.format(i, self.test_one_epoch()))
+            train_loss = self.train_one_epoch()
+            self.log['train_loss'].write('{}'.format(train_loss), debug='Loss Train {}:'.format(i))
+            self.save_model(i)
+            self.optimizer(i)
+            test_loss, test_accuracy = self.test_one_epoch()
+            self.log['test_loss'].write('{}'.format(test_loss), debug='Loss Test {}:'.format(i))
+            self.log['test_accuracy'].write('{}'.format(test_accuracy), debug='Loss Accuracy {}:'.format(i))

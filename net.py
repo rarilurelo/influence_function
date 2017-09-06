@@ -11,6 +11,7 @@ class Net(nn.Module):
         self.conv2_drop = nn.Dropout2d()
         self.fc1 = nn.Linear(320, 50)
         self.fc2 = nn.Linear(50, 10)
+        self.name = 'mnist'
 
     def forward(self, x):
         x = F.relu(F.max_pool2d(self.conv1(x), 2))
