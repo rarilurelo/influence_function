@@ -86,7 +86,7 @@ class MnistTrainer(object):
         sum_loss = 0
         for x, t in self.train_loader:
             if self.check_gpu():
-                x, t = x.cuda(), t.cuda()
+                x, t = x.cuda(self.gpu), t.cuda(self.gpu)
             x, t = Variable(x, volatile=False), Variable(t, volatile=False)
             self.optimizer.zero_grad()
             y = self.model(x)
@@ -104,7 +104,7 @@ class MnistTrainer(object):
         accuracy = 0
         for x, t in self.test_loader:
             if self.check_gpu():
-                x, t = x.cuda(), t.cuda()
+                x, t = x.cuda(self.gpu), t.cuda(self.gpu)
             x, t = Variable(x, volatile=True), Variable(t, volatile=True)
             y = self.model(x)
             # loss

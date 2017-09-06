@@ -7,6 +7,8 @@ from torch.autograd import grad
 
 
 def s_test(z_test, t_test, model, z_loader, gpu=-1, damp=0.01, scale=25.0, repeat=5000):
+    # initialize
+    model.eval()
     # prepate v
     z_test, t_test = Variable(z_test, volatile=False), Variable(t_test, volatile=False)
     if gpu >= 0:
