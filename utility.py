@@ -20,6 +20,15 @@ def make_dir(path):
     return True
 
 
+def find_files(path, affix_flag=False):
+    if path[-1] == '/':
+        path = path[:-1]
+    if affix_flag is False:
+        return [path + '/' + name for name in os.listdir(path)]
+    else:
+        return [name for name in os.listdir(path)]
+
+
 def remove_slash(path):
     return path[:-1] if path[-1] == '/' else path
 
