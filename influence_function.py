@@ -7,17 +7,7 @@ from torch.autograd import grad
 
 
 def s_test(z_test, t_test, model, z_loader, gpu=-1, damp=0.01, scale=25.0, repeat=5000):
-    # initialize
-    if gpu >= 0:
-        model.cuda(gpu)
-    model.eval()
-    # prepate v
-    z_test, t_test = Variable(z_test, volatile=False), Variable(t_test, volatile=False)
-    if gpu >= 0:
-        z_test, t_test = z_test.cuda(gpu), t_test.cuda(gpu)
-    y_test = model(z_test)
-    loss = F.nll_loss(y_test, t_test, weight=None, size_average=True)
-    v = list(grad(loss, list(model.parameters()), create_graph=True))
+    v = grad_z(z_test, t_test, model, gpu)
     h_estimates = v.copy()
 
     for i in utility.create_progressbar(repeat, desc='s_test'):
@@ -31,6 +21,18 @@ def s_test(z_test, t_test, model, z_loader, gpu=-1, damp=0.01, scale=25.0, repea
             h_estimate = [_v + (1 - damp) * h_estimate - _hv / scale for _v, h_estimate, _hv in six.moves.zip(v, h_estimates, hv)]
             break
     return h_estimate
+
+
+def grad_z(z, t, model, gpu=-1):
+    model.eval()
+    # initialize
+    z, t = Variable(z, volatile=False), Variable(t, volatile=False)
+    if gpu >= 0:
+        z, t = z.cuda(gpu), t.cuda(gpu)
+        model.cuda(gpu)
+    y = model(z)
+    loss = F.nll_loss(y, t, weight=None, size_average=True)
+    return list(grad(loss, list(model.parameters()), create_graph=True))
 
 
 if __name__ == '__main__':
