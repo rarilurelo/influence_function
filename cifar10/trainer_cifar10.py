@@ -83,18 +83,13 @@ class Cifar10Trainer(object):
         self.model.cpu()
 
     def train_one_epoch(self):
-        print('debug')
         self.to_gpu()
-        print('debug')
         self.model.train()
-        print('debug')
         sum_loss = 0
         for x, t in self.train_loader:
             if self.check_gpu():
                 x, t = x.cuda(self.gpu), t.cuda(self.gpu)
-            print('debug')
             x, t = Variable(x, volatile=False), Variable(t, volatile=False)
-            print('debug')
             self.optimizer.zero_grad()
             y = self.model(x)
             loss = F.nll_loss(y, t, weight=None, size_average=True)
@@ -137,7 +132,6 @@ class Cifar10Trainer(object):
 
     def run(self):
         for i in utility.create_progressbar(self.epochs + 1, desc='epoch', stride=1, start=self.start_epoch):
-            print('debug')
             train_loss = self.train_one_epoch()
             self.log['train_loss'].write('{}'.format(train_loss), debug='Loss Train {}:'.format(i))
             self.save(i)
