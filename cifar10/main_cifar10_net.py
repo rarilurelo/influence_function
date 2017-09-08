@@ -1,7 +1,7 @@
 import argparse
 import sys
 sys.path.append('../')
-from net_cifa10 import Net
+from net_cifar10 import Net
 from trainer_cifar10 import Cifar10Trainer
 from optimizers import MomentumSGD
 
