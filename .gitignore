@@ -6,3 +6,6 @@ s_test/*.s_test
 
 grad_z
 grad_z /*.grad_z
+
+data
+data/*
