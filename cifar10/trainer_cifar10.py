@@ -1,6 +1,5 @@
 from __future__ import print_function
 import torch
-import torch.nn.functional as F
 from torchvision import datasets, transforms
 from torch.autograd import Variable
 import utility
@@ -77,10 +76,10 @@ class Cifar10Trainer(object):
 
     def to_gpu(self):
         if self.check_gpu():
-            self.model.cuda(self.gpu)
+            self.model = self.model.cuda(self.gpu)
 
     def to_cpu(self):
-        self.model.cpu()
+        self.model = self.model.cpu()
 
     def train_one_epoch(self):
         self.to_gpu()
@@ -92,7 +91,7 @@ class Cifar10Trainer(object):
             x, t = Variable(x, volatile=False), Variable(t, volatile=False)
             self.optimizer.zero_grad()
             y = self.model(x)
-            loss = F.nll_loss(y, t, weight=None, size_average=True)
+            loss = self.model.calc_loss(y, t)
             loss.backward()
             self.optimizer.step()
             sum_loss += loss.cpu().data[0] * self.train_batch_size
@@ -110,8 +109,8 @@ class Cifar10Trainer(object):
             x, t = Variable(x, volatile=True), Variable(t, volatile=True)
             y = self.model(x)
             # loss
-            loss = F.nll_loss(y, t, weight=None, size_average=False)
-            sum_loss += loss.cpu().data[0]
+            loss = self.model.calc_loss(y, t)
+            sum_loss += loss.cpu().data[0] * self.test_batch_size
             # accuracy
             y = y.data.max(1, keepdim=True)[1]
             accuracy += y.eq(t.data.view_as(y)).cpu().sum()
