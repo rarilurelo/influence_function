@@ -26,7 +26,7 @@ parser.add_argument('--train_batch_size', type=int, default=1, metavar='N',
                     help='input batch size for s_test (default: 1)')
 parser.add_argument('--t', type=int, default=5000, metavar='N',
                     help='t')
-parser.add_argument('--r', type=int, default=10, metavar='N',
+parser.add_argument('--r', type=int, default=1, metavar='N',
                     help='r')
 parser.add_argument('--damp', type=float, default=0.01, metavar='N',
                     help='damp')
