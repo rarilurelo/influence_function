@@ -23,12 +23,12 @@ parser.add_argument('--epochs', type=int, default=200, metavar='N',
 parser.add_argument('--seed', type=int, default=1, metavar='S',
                     help='random seed (default: 1)')
 parser.add_argument('--lr', type=float, default=0.1, metavar='LR',
-                    help='learning rate (default: 0.01)')
+                    help='learning rate (default: 0.1)')
 parser.add_argument('--momentum', type=float, default=0.9, metavar='M',
-                    help='SGD momentum (default: 0.5)')
-parser.add_argument('--k', '-k', type=int, default=1, 
+                    help='SGD momentum (default: 0.9)')
+parser.add_argument('--k', '-k', type=int, default=1,
                     help='width hyperparameter')
-parser.add_argument('--N', '-n', type=int, default=17,
+parser.add_argument('--N', '-n', type=int, default=18,
                     help='total layers: 17 * 3 * 3 + 1')
 parser.add_argument('--multiplier', '-multiplier', type=int, default=4,
                     help='channel of last block of bottleneck (1x1 conv)')
