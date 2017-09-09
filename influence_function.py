@@ -16,7 +16,7 @@ def s_test(z_test, t_test, model, z_loader, gpu=-1, damp=0.01, scale=25.0, repea
             if gpu >= 0:
                 x, t = x.cuda(gpu), t.cuda(gpu)
             y = model(x)
-            loss = F.nll_loss(y, t, weight=None, size_average=True)
+            loss = model.calc_loss(y, t)
             hv = hvp(loss, list(model.parameters()), h_estimates)
             h_estimate = [_v + (1 - damp) * h_estimate - _hv / scale for _v, h_estimate, _hv in six.moves.zip(v, h_estimates, hv)]
             break
@@ -31,7 +31,7 @@ def grad_z(z, t, model, gpu=-1):
         z, t = z.cuda(gpu), t.cuda(gpu)
         model.cuda(gpu)
     y = model(z)
-    loss = F.nll_loss(y, t, weight=None, size_average=True)
+    loss = model.calc_loss(y, t)
     return list(grad(loss, list(model.parameters()), create_graph=True))
 
 
