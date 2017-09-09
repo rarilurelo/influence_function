@@ -13,7 +13,7 @@ from optimizers import MomentumSGD
 # error is like this:
 # RuntimeError: CUDNN_STATUS_NOT_SUPPORTED. This error may appear if you passed in a non-contiguous input.
 
-torch.backends.cudnn.enabled = False
+# torch.backends.cudnn.enabled = False
 
 parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
 parser.add_argument('--gpu', type=int, default=-1, metavar='N',
