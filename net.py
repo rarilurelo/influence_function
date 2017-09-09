@@ -1,5 +1,6 @@
 import torch.nn as nn
 import torch.nn.functional as F
+import functools
 
 
 class Net(nn.Module):
@@ -21,3 +22,9 @@ class Net(nn.Module):
         x = F.dropout(x, training=self.training)
         x = self.fc2(x)
         return F.log_softmax(x)
+
+    def _count_parameters(self, shape):
+        return functools.reduce(lambda a, b: a * b, shape)
+
+    def count_parameters(self):
+        return sum([self._count_parameters(p.data.shape) for p in self.parameters()])
