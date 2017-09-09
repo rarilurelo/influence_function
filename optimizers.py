@@ -4,7 +4,7 @@ import utility
 
 class MomentumSGD(object):
 
-    def __init__(self, model, lr, momentum, schedule=[10, 20], lr_decay=0.1):
+    def __init__(self, model, lr, momentum, schedule=[10, 20], lr_decay=0.1, weight_decay=1.0e-4):
         self.model, self.lr, self.momentum = model, lr, momentum
         self.schedule, self.lr_decay = schedule, lr_decay
         self.optimizer = optim.SGD(model.parameters(), lr=lr, momentum=momentum)
