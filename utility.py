@@ -34,7 +34,10 @@ def remove_slash(path):
 
 
 def create_progressbar(end, desc='', stride=1, start=0):
-    return tqdm(six.moves.range(int(start), int(end), int(stride)), desc=desc, leave=False)
+    if type(end) is int or type(end) is float:
+        return tqdm(six.moves.range(int(start), int(end), int(stride)), desc=desc, leave=False)
+    else:
+        return tqdm(end, desc=desc, leave=False)
 
 
 # store builtin print

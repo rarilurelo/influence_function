@@ -85,7 +85,8 @@ class Cifar10Trainer(object):
         self.to_gpu()
         self.model.train()
         sum_loss = 0
-        for x, t in self.train_loader:
+        progressbar = utility.create_progressbar(self.train_loader, desc='train')
+        for x, t in progressbar:
             if self.check_gpu():
                 x, t = x.cuda(self.gpu), t.cuda(self.gpu)
             x, t = Variable(x, volatile=False), Variable(t, volatile=False)
@@ -103,7 +104,8 @@ class Cifar10Trainer(object):
         self.model.eval()
         sum_loss = 0
         accuracy = 0
-        for x, t in self.test_loader:
+        progressbar = utility.create_progressbar(self.test_loader, desc='train')
+        for x, t in progressbar:
             if self.check_gpu():
                 x, t = x.cuda(self.gpu), t.cuda(self.gpu)
             x, t = Variable(x, volatile=True), Variable(t, volatile=True)
@@ -137,4 +139,4 @@ class Cifar10Trainer(object):
             self.optimizer(i)
             test_loss, test_accuracy = self.test_one_epoch()
             self.log['test_loss'].write('{}'.format(test_loss), debug='Loss Test {}:'.format(i))
-            self.log['test_accuracy'].write('{}'.format(test_accuracy), debug='Loss Accuracy {}:'.format(i))
+            self.log['test_accuracy'].write('{}'.format(test_accuracy), debug='Accuracy Test {}:'.format(i))
