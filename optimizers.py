@@ -27,7 +27,6 @@ class MomentumSGD(object):
     def info(self):
         utility.write('Optimizer')
         keys = self.__dict__.keys()
-        utility.write('    optimizer: {}'.format(str(self.optimizer)))
         for key in keys:
             if key == 'model':
                 continue
