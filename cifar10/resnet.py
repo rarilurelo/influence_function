@@ -164,7 +164,6 @@ class ResidualNetwork(NN):
         strides = [1] + [2] * (len(out_channels) - 1)
         # create resblock
         for i, out_channel, n, stride in six.moves.zip(six.moves.range(len(out_channels)), out_channels, N, strides):
-            print('{}:, {}, {}'.format(i, in_channel, out_channel))
             bridge = Bridge(in_channel, out_channel * multiplier - in_channel, pool_flag=stride == 2)
             self['res_block{}'.format(i)] = ResBlock(in_channel, out_channel, n=n, stride_at_first_layer=stride, multiplier=multiplier, bridge=bridge)
             in_channel = int(out_channel * multiplier)
