@@ -34,15 +34,25 @@ parser.add_argument('--multiplier', '-multiplier', type=int, default=4,
                     help='channel of last block of bottleneck (1x1 conv)')
 
 args = parser.parse_args().__dict__
-print(args)
+print('Args')
+print('    {}'.format(args))
 lr = args.pop('lr')
 momentum = args.pop('momentum')
 k = args.pop('k')
 N = args.pop('N')
 multiplier = args.pop('multiplier')
 
+# define model
 model = resnet.ResidualNetwork(10, out_channels=(16 * k, 32 * k, 64 * k), N=(N, N, N))
+print('Model')
+print('    name: {}'.format(model.name))
+print('    parameters: {}'.format(model.count_parameters()))
+
+# define parameters
 optimizer = MomentumSGD(model, lr=lr, momentum=momentum, schedule=[100, 150], lr_decay=0.1)
+optimizer.info()
+
 args['model'], args['optimizer'] = model, optimizer
+
 main = Cifar10Trainer(**args)
 main.run()

@@ -8,6 +8,6 @@ class Log(object):
 
     def write(self, seq, debug=None):
         if debug is not None:
-            print('{}: {}'.format(debug, seq))
+            utility.write('{}: {}'.format(debug, seq))
         with open('{}/{}'.format(self.save_path, self.name), 'a') as f:
             f.write('{}\n'.format(seq))

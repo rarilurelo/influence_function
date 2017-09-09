@@ -1,6 +1,5 @@
 import os
 import six
-import inspect
 from tqdm import tqdm
 
 
@@ -40,17 +39,5 @@ def create_progressbar(end, desc='', stride=1, start=0):
         return tqdm(end, desc=desc, leave=False)
 
 
-# store builtin print
-old_print = print
-
-
-def new_print(*args, **kwargs):
-    # if tqdm.tqdm.write raises error, use builtin print
-    try:
-        tqdm.tqdm.write(*args, **kwargs)
-    except:
-        old_print(*args, ** kwargs)
-
-
-# globaly replace print with new_print
-inspect.builtins.print = new_print
+def write(*args, **kwargs):
+    tqdm.write(*args, **kwargs)
