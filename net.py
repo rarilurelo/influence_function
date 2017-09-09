@@ -29,3 +29,8 @@ class Net(nn.Module):
 
     def count_parameters(self):
         return sum([self._count_parameters(p.data.shape) for p in self.parameters()])
+
+    def calc_loss(self, y, t):
+        y = F.log_softmax(y)
+        loss = F.nll_loss(y, t, weight=None, size_average=True)
+        return loss
