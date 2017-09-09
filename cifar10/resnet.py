@@ -190,5 +190,5 @@ class ResidualNetwork(NN):
 
     def calc_loss(self, y, t):
         y = F.log_softmax(y)
-        loss = F.nll_loss(y, t, weight=None, size_average=False)
+        loss = F.nll_loss(y, t, weight=None, size_average=True)
         return loss
