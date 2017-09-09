@@ -1,4 +1,3 @@
-from __future__ import print_function
 import torch
 from torchvision import datasets, transforms
 from torch.autograd import Variable
