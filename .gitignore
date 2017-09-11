@@ -1,6 +1,9 @@
 log
 log/*.model
 
+log2
+log2/*.model
+
 s_test
 s_test/*.s_test
 
