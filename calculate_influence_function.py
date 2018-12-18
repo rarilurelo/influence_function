@@ -39,8 +39,9 @@ for i in six.moves.range(r):
     s_tests.append('{}/{}_{}.s_test'.format(s_test, s_tests_id, i))
 
 grad_z = []
+grad_z_iter_len = 60000
 
-for i in utility.create_progressbar(60000, desc='loading grad_z'):
+for i in utility.create_progressbar(grad_z_iter_len, desc='loading grad_z'):
     grad_z.append(torch.load('{}/{}.grad_z'.format(z, i)))
 
 # take sum
@@ -51,8 +52,7 @@ for i in utility.create_progressbar(len(s_tests), desc='loading s_tests', start=
 e_s_test = [i / len(s_tests) for i in e_s_test]
 
 influence = []
-for i in utility.create_progressbar(60000, desc='caluculating influence'):
-    influence.append(-sum([torch.sum(k * j).data.numpy()[0] for k, j in six.moves.zip(grad_z[i], e_s_test)]) / n)
+for i in utility.create_progressbar(grad_z_iter_len, desc='caluculating influence'):
 
 harmful = np.argsort(influence)
 helpful = harmful[::-1]
