@@ -53,6 +53,8 @@ e_s_test = [i / len(s_tests) for i in e_s_test]
 
 influence = []
 for i in utility.create_progressbar(grad_z_iter_len, desc='caluculating influence'):
+    inf_tmp = -sum([torch.sum(k * j).data.numpy() for k, j in six.moves.zip(grad_z[i], e_s_test)]) / n
+    influence.append(inf_tmp)
 
 harmful = np.argsort(influence)
 helpful = harmful[::-1]
